@@ -10,8 +10,14 @@ struct _Node {
     Node* right;
 };
 
+
 Node* createNode(char key, int priority) {
     Node* newNode = (Node*) malloc(sizeof(Node));
+
+    if (!newNode) {
+        perror("Failed to allocate memory for node creation");
+        exit(EXIT_FAILURE);
+    }
 
     newNode->key = key;
     newNode->priority = priority;
@@ -21,107 +27,54 @@ Node* createNode(char key, int priority) {
     return newNode;
 }
 
-void showNode(Node* node) {
-    if (node) {
-        printf("key: %c, priority: %d\n", node->key, node->priority);
-    }
+Node* createEmptyTree() {
+    return NULL;
 }
 
-void showTree(Node* tree) {
-    if (!tree) {
-        return;
-    }
-
-    showNode(tree);
-    
-    if (tree->left) {
-        printf("left of %c%d\n", tree->key, tree->priority);
-        showTree(tree->left);
-    }
-
-    if (tree->right) {
-        printf("right of %c%d\n", tree->key, tree->priority);
-        showTree(tree->right);
-    }
+int isTreeEmpty(Node* root) {
+    return root == NULL;
 }
 
-Node* addNode(Node* tree, Node* child) {
-    if (!tree) {
-        return NULL;
-    } 
-
-    if (!child) {
+Node* getLeftChild(Node* node) {
+    if (!node) {
+        fprintf(stderr, "Error: Cannot get left child of a NULL node.\n");
         return NULL;
     }
 
-    Node* currentNode = tree;
-    Node* parent = NULL;
-    while (currentNode) {
-        if (child->priority < currentNode->priority) {
-            currentNode = addNode(child, currentNode);
+    return node->left;
+}
 
-            if (!parent) {
-                return currentNode;
-            }
+Node* getRightChild(Node* node) {
+    if (!node) {
+        fprintf(stderr, "Error: Cannot get right child of a NULL node.\n");
+        return NULL;
+    }
 
-            else {
-                if (currentNode->key < parent->key) {
-                    parent->left = currentNode;
-                }
+    return node->right;
+}
 
-                else {
-                    parent->right = currentNode;
-                }
+Node* findKey(char key, Node* root) {
+    if (isTreeEmpty(root)) {
+        fprintf(stderr, "Error: Empty tree.\n");
+        return NULL;
+    }
 
-                break;
-            }
+    Node* iter = root;
+    while (iter) {
+        if (iter->key == key) {
+            return iter;
         }
 
-        if (child->key < currentNode->key) {
-            if (currentNode->left == NULL) {
-                currentNode->left = child; 
-                break;
-            }
-            
-            else {
-                parent = currentNode;
-                currentNode = currentNode->left;
-            }
-        } 
-        
         else {
-            if (currentNode->right == NULL) {
-                currentNode->right = child; 
-                break;
+            if (key < iter->key) {
+                iter = getLeftChild(iter);
             }
-            
+
             else {
-                parent = currentNode;
-                currentNode = currentNode->right;
+                iter = getRightChild(iter);
             }
         }
     }
 
-    return tree;
-}
-
-int main() {
-    Node* nodeA1 = createNode('A', 1);
-    Node* nodeB2 = createNode('B', 2);
-    Node* nodeC3 = createNode('C', 3);
-    Node* nodeD4 = createNode('D', 4);
-
-    Node* tree = nodeD4;
-    showTree(tree);
-    printf("\n");
-
-    tree = addNode(tree, nodeB2);
-    showTree(tree);
-    printf("\n");
-
-    tree = addNode(tree, nodeC3);
-    showTree(tree);
-    printf("\n");
-    
-    return 0;
+    return NULL;
 }
