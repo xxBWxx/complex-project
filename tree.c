@@ -10,7 +10,6 @@ struct _Node {
     Node* right;
 };
 
-
 Node* createNode(char key, int priority) {
     Node* newNode = (Node*) malloc(sizeof(Node));
 
@@ -77,4 +76,50 @@ Node* findKey(char key, Node* root) {
     }
 
     return NULL;
+}
+
+Node* insertNode(Node* root, Node* node) {
+    if (node->priority < root->priority) {
+        if (node->key < root->key) {
+            node->right = root;
+
+            if ((root->left) && (root->left->key < node->key)) {
+                node->left = root->left;
+                root->left = NULL;
+            }
+
+            return node;
+        }
+
+        else {
+            node->left = root;
+
+            if ((root->right) && (root->right->key > node->key)) {
+                node->right = root->right;
+                root->right = NULL;
+            }
+
+            return node;
+        }
+    }
+
+    if (node->key < root->key) {
+        if (!root->left) {
+            root->left = node;
+            return root;
+        }
+
+        root->left = insertNode(root->left, node);
+        
+        return root;
+    }
+
+    if (!root->right) {
+        root->right = node;
+        return root;
+    }
+
+    root->right = insertNode(root->right, node);
+    
+    return root;
 }
