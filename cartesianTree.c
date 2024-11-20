@@ -10,6 +10,7 @@ struct _Node {
     Node* right;
 };
 
+
 Node* createNode(char key, int priority) {
     Node* newNode = (Node*) malloc(sizeof(Node));
 
@@ -139,12 +140,12 @@ void showTree(Node* root) {
     showNode(root);
     
     if (root->left) {
-        printf("left of %c%d\n", root->key, root->priority);
+        printf("-left of %c%d\n", root->key, root->priority);
         showTree(root->left);
     }
 
     if (root->right) {
-        printf("right of %c%d\n", root->key, root->priority);
+        printf("-right of %c%d\n", root->key, root->priority);
         showTree(root->right);
     }
 }
