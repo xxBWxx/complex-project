@@ -80,6 +80,10 @@ Node* findKey(char key, Node* root) {
 }
 
 Node* insertNode(Node* root, Node* node) {
+    if (isTreeEmpty(root)) {
+        return node;
+    }
+
     if (node->priority < root->priority) {
         if (node->key < root->key) {
             node->right = root;
