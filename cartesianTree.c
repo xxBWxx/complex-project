@@ -123,3 +123,28 @@ Node* insertNode(Node* root, Node* node) {
     
     return root;
 }
+
+
+void showNode(Node* node) {
+    if (node) {
+        printf("key: %c, priority: %d\n", node->key, node->priority);
+    }
+}
+
+void showTree(Node* root) {
+    if (!root) {
+        return;
+    }
+
+    showNode(root);
+    
+    if (root->left) {
+        printf("left of %c%d\n", root->key, root->priority);
+        showTree(root->left);
+    }
+
+    if (root->right) {
+        printf("right of %c%d\n", root->key, root->priority);
+        showTree(root->right);
+    }
+}
