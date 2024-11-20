@@ -153,3 +153,21 @@ void showTree(Node* root) {
         showTree(root->right);
     }
 }
+
+
+int main() {
+    Node* nodeA2 = createNode('A', 2);
+    Node* nodeB3 = createNode('B', 3);
+    Node* nodeC1 = createNode('C', 1);
+    Node* nodeD4 = createNode('D', 4);
+
+    Node* tree = createEmptyTree();
+    
+    tree = insertNode(tree, nodeC1);
+    tree = insertNode(tree, nodeA2);
+    tree = insertNode(tree, nodeB3);
+    tree = insertNode(tree, nodeD4);
+    showTree(tree);
+
+    return 0;
+}
