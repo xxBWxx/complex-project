@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 typedef struct _Node Node;
 
@@ -154,20 +155,106 @@ void showTree(Node* root) {
     }
 }
 
+Node* rotateLeft(Node* root) {
+    Node* newRoot = root->right;
+    root->right = newRoot->left;
+    newRoot->left = root;
+    
+    return newRoot;
+}
+
+Node* rotateRight(Node* root) {
+    Node* newRoot = root->left;
+    root->left = newRoot->right;
+    newRoot->right = root;
+    
+    return newRoot;
+}
+
+Node* deleteNode(Node* root, Node* node) {
+    if (!root) {
+        fprintf(stderr, "Error: Node not found.\n");
+        return NULL;
+    }
+
+    // Search for the node to delete
+    if (node->key < root->key) {
+        root->left = deleteNode(root->left, node);
+        return root;
+    }
+    if (node->key > root->key) {
+        root->right = deleteNode(root->right, node);
+        return root;
+    }
+
+    // Node to delete is found
+    if (!root->left && !root->right) {
+        // Case 1: Node is a leaf
+        free(root);
+        return NULL;
+    }
+    
+    else if (!root->left) {
+        // Case 2: Node has only a right child
+        Node* temp = root->right;
+        free(root);
+        return temp;
+    }
+    
+    else if (!root->right) {
+        // Case 3: Node has only a left child
+        Node* temp = root->left;
+        free(root);
+        return temp;
+    }
+
+    // Case 4: Node has two children
+    // Rotate with the child that has the lowest priority
+    if (root->left->priority < root->right->priority) {
+        root = rotateRight(root);
+        root->right = deleteNode(root->right, node);
+    } else {
+        root = rotateLeft(root);
+        root->left = deleteNode(root->left, node);
+    }
+
+    return root;
+}
+
 
 int main() {
-    Node* nodeA2 = createNode('A', 2);
-    Node* nodeB3 = createNode('B', 3);
-    Node* nodeC1 = createNode('C', 1);
-    Node* nodeD4 = createNode('D', 4);
+    // Create nodes
+    Node* nodeA = createNode('A', 5);
+    Node* nodeB = createNode('B', 3);
+    Node* nodeC = createNode('C', 8);
+    Node* nodeD = createNode('D', 2);
+    Node* nodeE = createNode('E', 6);
+    Node* nodeF = createNode('F', 7);
+    Node* nodeG = createNode('G', 9);
+    Node* nodeH = createNode('H', 1);
+    Node* nodeI = createNode('I', 10);
+    Node* nodeJ = createNode('J', 12);
 
+    // Create empty tree
     Node* tree = createEmptyTree();
     
-    tree = insertNode(tree, nodeC1);
-    tree = insertNode(tree, nodeA2);
-    tree = insertNode(tree, nodeB3);
-    tree = insertNode(tree, nodeD4);
+    // Insertion
+    tree = insertNode(tree, nodeA);
+    tree = insertNode(tree, nodeB);
+    tree = insertNode(tree, nodeC);
+    tree = insertNode(tree, nodeD);
+    tree = insertNode(tree, nodeE);
+    tree = insertNode(tree, nodeF);
+    tree = insertNode(tree, nodeG);
+    tree = insertNode(tree, nodeH);
+    tree = insertNode(tree, nodeI);
+    tree = insertNode(tree, nodeJ);
+    
+    // Deletion
+    tree = deleteNode(tree, nodeA);
+    tree = deleteNode(tree, nodeJ);
+    tree = deleteNode(tree, nodeI);
     showTree(tree);
-
+    
     return 0;
 }
