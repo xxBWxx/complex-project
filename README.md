@@ -13,6 +13,14 @@
 - Nodes are ordered by their priorities such that for any node _z_:
   - _z_'s priority is less than or equal to the priorities of its children.
 
+## 1.a
+
+<img width="439" alt="image" src="https://github.com/user-attachments/assets/4036bd4e-afc3-4ec5-95c2-4bce683444fb">
+
+## 1.b
+
+Changing the order of the nodes won't change the tree because they will be inserted in their correct place regardless
+
 ## 1.c
 
 ```c
@@ -108,6 +116,34 @@ Node* findKey(char key, Node* root) {
 Complexity of the search algorithm as a function of the depth of the searched node:
 
 **O(log(n))**
+
+## 3.a
+
+If we try to insert a node to the 1.a tree without doing for the rotation that might be required, the resulting tree might not verify the properties anymore. For example:
+
+### Original 1.a Tree
+
+<img width="439" alt="image" src="https://github.com/user-attachments/assets/4036bd4e-afc3-4ec5-95c2-4bce683444fb">
+
+### Step 1: Insert (M, 20), no problem so far
+
+<img width="479" alt="image" src="https://github.com/user-attachments/assets/6e680549-5747-49f2-877a-e3e44ad29021">
+
+### Step 2: Insert (K, 15), also no problem
+
+<img width="529" alt="image" src="https://github.com/user-attachments/assets/53e5acfe-2dc6-4f09-a5e1-87192172b028">
+
+### Step 3: Insert (L, 14), here we see a problem, the (M, 20) node ends up being on the left branch of the new (L, 14) when M is later in the alphabet so it is supposed to be on the right
+
+<img width="611" alt="image" src="https://github.com/user-attachments/assets/6baf82cd-1721-4020-a448-f54bac55fb78">
+
+This problem occurs because the algorithm tries to add (L, 14) on top of the (K, 15) node due to the priorities, but since it doesn't check the child nodes of K, it doesn't know the M node underneath is also supposed to be moved.
+
+### == FIXED ALGORITHM == 
+### Same 3 nodes added using the fixed algorithm that does a rotation if needed while inserting new nodes
+
+<img width="581" alt="image" src="https://github.com/user-attachments/assets/c843da33-6014-4570-9104-0c79c896e794">
+
 
 ## 3.b
 
@@ -288,15 +324,21 @@ Node* deleteNode(Node* root, Node* node) {
 
 Visualizing the trees using python
 
+### Initial Tree (From 1.a)
+
+<img width="457" alt="image" src="https://github.com/user-attachments/assets/cc6f0415-b798-423b-ac48-d8286b8fdb74">
+
 ### Step 1: Remove Node (A : 5)
 
+<img width="399" alt="image" src="https://github.com/user-attachments/assets/f0803382-375f-46f0-8888-778a52fdb639">
 
 ### Step 2: Remove Node (J : 12)
 
+<img width="347" alt="image" src="https://github.com/user-attachments/assets/15a14bd2-6590-4361-a798-d96e06c184d7">
 
 ### Step 3: Remove Node (H : 1)
 
-
+<img width="299" alt="image" src="https://github.com/user-attachments/assets/23ba6e14-2bc2-461f-96a5-14d4e43153b7">
 
 ## 5.a
 
