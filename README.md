@@ -105,7 +105,15 @@ Node* findKey(char key, Node* root) {
 
 ## 2.b
 
-O(log(n))
+Complexity of the search algorithm as a function of the depth of the searched node:
+
+**O(log(n))**
+
+## 3.b
+
+Complexity of the insert algorithm as a function of the depth of its predecessor:
+
+**O(log(n))**??
 
 ## 3.c
 
@@ -200,7 +208,9 @@ This method ensures that _z_ is deleted in a way that preserves the Cartesian tr
 
 ## 4.b
 
-O(log(n))
+Complexity of the remove algorithm:
+
+**O(log(n))**
 
 ## 4.c
 
@@ -271,6 +281,22 @@ Node* deleteNode(Node* root, Node* node) {
     return root;
 }
 ```
+
+## 4.d
+
+### Removing the nodes (A : 5), (J : 12) and (H : 1) in order from the example tree from question 1.a
+
+Visualizing the trees using python
+
+### Step 1: Remove Node (A : 5)
+
+
+### Step 2: Remove Node (J : 12)
+
+
+### Step 3: Remove Node (H : 1)
+
+
 
 ## 5.a
 
