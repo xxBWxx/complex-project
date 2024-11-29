@@ -80,79 +80,12 @@ Node* findKey(char key, Node* root) {
     return NULL;
 }
 
-Node* insertNode(Node* root, Node* node) {
-    if (isTreeEmpty(root)) {
-        return node;
-    }
-
-    if (node->priority < root->priority) {
-        if (node->key < root->key) {
-            node->right = root;
-
-            if ((root->left) && (root->left->key < node->key)) {
-                node->left = root->left;
-                root->left = NULL;
-            }
-
-            return node;
-        }
-
-        else {
-            node->left = root;
-
-            if ((root->right) && (root->right->key > node->key)) {
-                node->right = root->right;
-                root->right = NULL;
-            }
-
-            return node;
-        }
-    }
-
-    if (node->key < root->key) {
-        if (!root->left) {
-            root->left = node;
-            return root;
-        }
-
-        root->left = insertNode(root->left, node);
-        
-        return root;
-    }
-
-    if (!root->right) {
-        root->right = node;
-        return root;
-    }
-
-    root->right = insertNode(root->right, node);
+Node* rotateRight(Node* root) {
+    Node* newRoot = root->left;
+    root->left = newRoot->right;
+    newRoot->right = root;
     
-    return root;
-}
-
-
-void showNode(Node* node) {
-    if (node) {
-        printf("key: %c, priority: %d\n", node->key, node->priority);
-    }
-}
-
-void showTree(Node* root) {
-    if (!root) {
-        return;
-    }
-
-    showNode(root);
-    
-    if (root->left) {
-        printf("-left of %c%d\n", root->key, root->priority);
-        showTree(root->left);
-    }
-
-    if (root->right) {
-        printf("-right of %c%d\n", root->key, root->priority);
-        showTree(root->right);
-    }
+    return newRoot;
 }
 
 Node* rotateLeft(Node* root) {
@@ -163,12 +96,89 @@ Node* rotateLeft(Node* root) {
     return newRoot;
 }
 
-Node* rotateRight(Node* root) {
-    Node* newRoot = root->left;
-    root->left = newRoot->right;
-    newRoot->right = root;
-    
-    return newRoot;
+Node* BSTInsert(Node* root, Node* node) {
+    if (node->priority < root->priority) {
+        if (node->key < root->key) {
+            node->right = root;
+            return node;
+        }
+
+        else {
+            node->left = root;
+            return node;
+        }
+    }
+
+    if (node->key < root->key) {
+        if (!root->left) {
+            root->left = node;
+            return root;
+        }
+
+        root->left = BSTInsert(root->left, node);
+        return root;
+    }
+
+    if (!root->right) {
+        root->right = node;
+        return root;
+    }
+
+    root->right = BSTInsert(root->right, node);
+    return root;
+}
+
+
+Node* createBSTTree(Node* nodes[], int len) {
+    Node* root = nodes[0];
+
+    for (int i = 1; i < len; i++) {
+        Node* node = nodes[i];
+        root = BSTInsert(root, node);
+    }
+
+    return root;
+}
+
+Node* insertNode(Node* root, Node* node) {
+    if (isTreeEmpty(root)) {
+        return node;
+    }
+
+    if (node->key < root->key) {
+        root->left = insertNode(root->left, node);
+    }
+
+    else if (node->key > root->key) {
+        root->right = insertNode(root->right, node);
+    }
+
+    else {
+        return root;
+    }
+
+    // Rotate the tree if the priority of the node is lower than the priority of the root
+    if (node->priority < root->priority) {
+        if (node->key < root->key) {
+            return rotateRight(root);
+        }
+
+        return rotateLeft(root);
+    }
+
+    // If a rotation is not needed, return the root for the recursive calls
+    return root;
+}
+
+Node* createTree(Node* nodes[], int len) {
+    Node* root = nodes[0];
+
+    for (int i = 1; i < len; i++) {
+        Node* node = nodes[i];
+        root = insertNode(root, node);
+    }
+
+    return root;
 }
 
 Node* deleteNode(Node* root, Node* node) {
@@ -221,6 +231,30 @@ Node* deleteNode(Node* root, Node* node) {
     return root;
 }
 
+void showNode(Node* node) {
+    if (node) {
+        printf("key: %c, priority: %d\n", node->key, node->priority);
+    }
+}
+
+void showTree(Node* root) {
+    if (!root) {
+        return;
+    }
+
+    showNode(root);
+    
+    if (root->left) {
+        printf("-left of %c%d\n", root->key, root->priority);
+        showTree(root->left);
+    }
+
+    if (root->right) {
+        printf("-right of %c%d\n", root->key, root->priority);
+        showTree(root->right);
+    }
+}
+
 
 int main() {
     // Create nodes
@@ -235,20 +269,14 @@ int main() {
     Node* nodeI = createNode('I', 10);
     Node* nodeJ = createNode('J', 12);
 
+    Node* nodes[10] = {nodeA, nodeB, nodeC, nodeD, nodeE, nodeF, nodeG, nodeH, nodeI, nodeJ};
+    int len = 10;
+
     // Create empty tree
     Node* tree = createEmptyTree();
     
     // Insertion
-    tree = insertNode(tree, nodeA);
-    tree = insertNode(tree, nodeB);
-    tree = insertNode(tree, nodeC);
-    tree = insertNode(tree, nodeD);
-    tree = insertNode(tree, nodeE);
-    tree = insertNode(tree, nodeF);
-    tree = insertNode(tree, nodeG);
-    tree = insertNode(tree, nodeH);
-    tree = insertNode(tree, nodeI);
-    tree = insertNode(tree, nodeJ);
+    tree = createTree(nodes, len);
     
     // Deletion
     tree = deleteNode(tree, nodeA);
