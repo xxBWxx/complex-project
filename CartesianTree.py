@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # --------------------------------------------------------------------------- #
+# CODE FOR EXERCISE 1      (STRUCTURE AND PROPERTIES)                         #
 # Class and visualisation functions, for the Cartesian Tree data structure    #
 # --------------------------------------------------------------------------- #
 
@@ -82,19 +83,6 @@ def find_node(root, key):
 # ------------------------------------------------- #
 
 def BST_insert(root, node, verbose=False):
-    if verbose:
-        print(f"--ADDING {node.key} TO {root.key}--")
-    if node.priority < root.priority:
-        if node.key < root.key:
-            node.right = root
-            if verbose:
-                print(f"Added node above root ({node.key}.right = {root.key})")
-            return node
-        else:
-            node.left = root
-            if verbose:
-                print(f"Added node above root ({node.key}.left = {root.key})")
-            return node
     if node.key < root.key:
         if root.left is None:
             root.left = node
@@ -188,44 +176,66 @@ def create_tree(nodes, verbose=False):
 # ------------------------------------------------- #
 
 
-def remove_node(root, node):
+def remove_node(root, node, verbose=False):
     if root is None:
+        if verbose:
+            print(f"Node {node.key} not found in the tree")
         return None
     
     # Search for the node to remove
     if node.key < root.key:
-        root.left = remove_node(root.left, node)
+        if verbose:
+            print(f"-SEARCHING {node.key}- Going one layer down on the left from {root.key} for {node.key}")
+        root.left = remove_node(root.left, node, verbose=verbose)
         return root
     if node.key > root.key:
-        root.right = remove_node(root.right, node)
+        if verbose:
+            print(f"-SEARCHING {node.key}- Going one layer down on the right from {root.key} for {node.key}")
+        root.right = remove_node(root.right, node, verbose=verbose)
         return root
     
     # Case 1: Node is a leaf
     if root.left is None and root.right is None:
+        if verbose:
+            print(f"{node.key} is a leaf node, removing it")
         return None
     
     # Case 2: Node has one child
     elif root.left is None:
         # Case 2.1: Node has a right child
+        if verbose:
+            print(f"{node.key} has only a right child, removing it and replacing it with the right child")
         return root.right
     
     elif root.right is None:
         # Case 2.2: Node has a left child
+        if verbose:
+            print(f"{node.key} has only a left child, removing it and replacing it with the left child")
         return root.left
     
     # Case 3: Node has two children
     # Rotate with the child that has the lower priority
     if root.left.priority < root.right.priority:
+        if verbose:
+            print(f"{node.key} has two children, left child has lower priority, rotating right")
         root = rotate_tree_right(root)
-        root.right = remove_node(root.right, node)
+        if verbose:
+            print(f"Rotated tree, new root is {root.key}, continuing with remove_node({root.right.key}, {node.key})")
+            print_tree(root)
+        root.right = remove_node(root.right, node, verbose=verbose)
     else:
+        if verbose:
+            print(f"{node.key} has two children, right child has lower priority, rotating left")
         root = rotate_tree_left(root)
-        root.left = remove_node(root.left, node)
+        if verbose:
+            print(f"Rotated tree, new root is {root.key}, continuing with remove_node({root.left.key}, {node.key})")
+            print_tree(root)
+        root.left = remove_node(root.left, node, verbose=verbose)
     
     return root
 
-def remove_key(root, key):
-    return remove_node(root, find_node(root, key))
+def remove_key(root, key, verbose=False):
+    return remove_node(root, find_node(root, key), verbose=verbose)
 
 
 
